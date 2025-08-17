@@ -1,0 +1,39 @@
+# Core Dependencies
+# (Note: For a static website, these are the main technologies used, not Python packages)
+
+# Development Tools
+- Modern web browser (Chrome, Firefox, Safari, or Edge)
+- Code editor (VS Code, Sublime Text, etc.)
+- Git for version control
+- Node.js (for local development server)
+
+# Core Web Technologies
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+
+# Optional Development Dependencies
+# (If using a local development server)
+- live-server (npm install -g live-server)
+
+# Browser APIs Used
+- Web Storage API (for theme persistence)
+- Fetch API (if implementing dynamic content)
+- Intersection Observer API (for lazy loading)
+
+# Testing
+- BrowserStack or similar for cross-browser testing
+- Lighthouse (for performance testing)
+
+# Deployment
+- GitHub Pages (or similar static site hosting)
+- Custom domain (optional)
+
+# Performance Optimization
+- Image optimization tools (Squoosh, ImageOptim)
+- CSS/JS minification tools (if not using a build tool)
+
+# Accessibility
+- Screen reader testing tools
+- Color contrast checkers
+- Keyboard navigation testing
