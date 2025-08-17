@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT Aggregator - Find Your Perfect AI Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #6b7280;
+            --background: #f9fafb;
+            --card-bg: #ffffff;
+            --text: #111827;
+            --text-secondary: #4b5563;
+            --border: #e5e7eb;
+        }
+
+        [data-theme="dark"] {
+            --primary: #818cf8;
+            --primary-hover: #6366f1;
+            --secondary: #9ca3af;
+            --background: #111827;
+            --card-bg: #1f2937;
+            --text: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Search Bar */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: var(--card-bg);
+            color: var(--text);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+        }
+
+        /* Filter Buttons */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background-color: var(--card-bg);
+            color: var(--text-secondary);
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* GPT Grid */
+        .gpt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 0 1rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gpt-card {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gpt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .gpt-image {
+            height: 160px;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #4b5563;
+        }
+
+        .gpt-content {
+            padding: 1.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gpt-category {
+            display: inline-block;
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.75rem;
+            align-self: flex-start;
+        }
+
+        .gpt-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .gpt-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .gpt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .try-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .try-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            padding: 2rem 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .gpt-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>GPT Aggregator</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#">Home</a>
+                    <a href="#">Categories</a>
+                    <a href="#">About</a>
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Discover Amazing Custom GPTs</h1>
+            <p>Find the perfect AI assistant for your needs. Explore our collection of specialized GPTs.</p>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search GPTs...">
+            </div>
+            
+            <div class="filters" id="filterContainer">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="education">Education</button>
+                <button class="filter-btn" data-category="productivity">Productivity</button>
+                <button class="filter-btn" data-category="creative">Creative</button>
+                <button class="filter-btn" data-category="technical">Technical</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- GPT Grid -->
+    <main>
+        <div class="gpt-grid" id="gptGrid">
+            <!-- GPT Cards will be dynamically inserted here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 GPT Aggregator. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // GPT Data
+        const gpts = [
+            {
+                id: 'math-visualizer',
+                title: 'Math Visualizer',
+                description: 'Helps visualize and understand complex mathematical concepts through interactive explanations and diagrams.',
+                category: 'education',
+                icon: '🧮',
+                link: 'https://chatgpt.com/g/g-68a0ac9c7740819197c310b89a880d91-math-visualizer',
+                tags: ['math', 'education', 'visualization']
+            },
+            {
+                id: 'code-tutor',
+                title: 'Code Tutor',
+                description: 'Get help with programming concepts, debug code, and learn best practices in multiple programming languages.',
+                category: 'technical',
+                icon: '💻',
+                link: '#',
+                tags: ['programming', 'coding', 'tutorial']
+            },
+            {
+                id: 'creative-writer',
+                title: 'Creative Writer',
+                description: 'Generate creative stories, poems, and content with AI assistance. Perfect for writers and content creators.',
+                category: 'creative',
+                icon: '✍️',
+                link: '#',
+                tags: ['writing', 'stories', 'content']
+            },
+            {
+                id: 'language-tutor',
+                title: 'Language Tutor',
+                description: 'Practice and learn new languages with personalized lessons and conversation practice.',
+                category: 'education',
+                icon: '🌐',
+                link: '#',
+                tags: ['languages', 'learning', 'education']
+            },
+            {
+                id: 'productivity-coach',
+                title: 'Productivity Coach',
+                description: 'Get personalized productivity tips, time management strategies, and goal-setting guidance.',
+                category: 'productivity',
+                icon: '⏱️',
+                link: '#',
+                tags: ['productivity', 'time management', 'goals']
+            },
+            {
+                id: 'data-analyzer',
+                title: 'Data Analyzer',
+                description: 'Analyze and visualize data, create reports, and get insights from your datasets.',
+                category: 'technical',
+                icon: '📊',
+                link: '#',
+                tags: ['data', 'analysis', 'visualization']
+            }
+        ];
+
+        // DOM Elements
+        const gptGrid = document.getElementById('gptGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+
+        // Initialize the page
+        function init() {
+            renderGPTs(gpts);
+            setupEventListeners();
+            checkThemePreference();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search functionality
+            searchInput.addEventListener('input', handleSearch);
+            
+            // Filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', handleFilterClick);
+            });
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Render GPT cards
+        function renderGPTs(gptsToRender) {
+            gptGrid.innerHTML = '';
+            
+            if (gptsToRender.length === 0) {
+                gptGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary);">No GPTs found matching your criteria.</p>';
+                return;
+            }
+            
+            gptsToRender.forEach((gpt, index) => {
+                const card = createGPTCard(gpt, index);
+                gptGrid.appendChild(card);
+            });
+        }
+
+        // Create a GPT card element
+        function createGPTCard(gpt, index) {
+            const card = document.createElement('div');
+            card.className = 'gpt-card fade-in';
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.dataset.categories = gpt.category;
+            card.dataset.tags = gpt.tags.join(' ');
+            
+            card.innerHTML = `
+                <div class="gpt-image" style="background-color: ${getRandomGradient()}">
+                    <span style="font-size: 3rem;">${gpt.icon}</span>
+                </div>
+                <div class="gpt-content">
+                    <span class="gpt-category">${gpt.category}</span>
+                    <h3 class="gpt-title">${gpt.title}</h3>
+                    <p class="gpt-description">${gpt.description}</p>
+                    <div class="gpt-footer">
+                        <div class="gpt-tags">
+                            ${gpt.tags.map(tag => `<span style="font-size: 0.75rem; color: var(--text-secondary); margin-right: 0.5rem;">#${tag}</span>`).join('')}
+                        </div>
+                        <a href="${gpt.link}" target="_blank" class="try-btn">
+                            Try it <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Generate a random gradient for the card header
+        function getRandomGradient() {
+            const colors = [
+                'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+                'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+                'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
+                'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)',
+                'linear-gradient(135deg, #a6c1ee 0%, #fbc2eb 100%)',
+                'linear-gradient(135deg, #ffc3a0 0%, #ffafbd 100%)',
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Handle search input
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.category;
+            
+            const filteredGPTs = gpts.filter(gpt => {
+                const matchesSearch = gpt.title.toLowerCase().includes(searchTerm) || 
+                                    gpt.description.toLowerCase().includes(searchTerm) ||
+                                    gpt.tags.some(tag => tag.includes(searchTerm));
+                
+                const matchesFilter = activeFilter === 'all' || gpt.category === activeFilter;
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            renderGPTs(filteredGPTs);
+        }
+
+        // Handle filter button clicks
+        function handleFilterClick(e) {
+            const clickedButton = e.target;
+            const category = clickedButton.dataset.category;
+            
+            // Update active state
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            clickedButton.classList.add('active');
+            
+            // Filter GPTs
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredGPTs = gpts.filter(gpt => {
+                const matchesSearch = gpt.title.toLowerCase().includes(searchTerm) || 
+                                    gpt.description.toLowerCase().includes(searchTerm) ||
+                                    gpt.tags.some(tag => tag.includes(searchTerm));
+                
+                const matchesFilter = category === 'all' || gpt.category === category;
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            renderGPTs(filteredGPTs);
+        }
+
+        // Theme functionality
+        function checkThemePreference() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (prefersDark) {
+                setTheme('dark');
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Update icon
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
